@@ -1,20 +1,54 @@
-# GitHub Actions with Vault OIDC Demonstration
 
-A demonstration of using GitHub OIDC to authenticate to HashiCorp Vault. The files included in this repository accompany the talk I delivered at HashiConf Global 2022. I will include a link to the talk when it comes available.
+# Terraform and HCP Integration Guide
 
-## What's in this repo?
+The reason HCP is being used in the terraform scripts is because the `terraform.tf` file specifies a cloud configuration block as follows:
 
-There are two directories in this repository. The `configure_vault` directory has a Terraform configuration you can use to deploy an instance of Vault server to HashiCorp Cloud Platform. You will need an account on the platform to use the contents of the directory. You don't have to use HCP Vault if you wish to follow along, but it is much easier! There are two other options:
+```hcl
+cloud {
+    organization = "<organization_name>"
+    workspaces {
+        name = "<workspace_name>"
+    }
+}
+```
 
-* Deploy your own Vault server with a public endpoint
-* Deploy a private Vault server and also a GitHub runner instance on the same network
+## Creating a Service Principal in HCP
 
-More information about using the contents of `configure_vault` is in the `README.md` for that directory.
+Create a Service Principal at the Project level following this guide: [Service Principal Creation Guide](https://registry.terraform.io/providers/hashicorp/hcp/latest/docs/guides/auth#1-create-a-service-principal)
 
-The second directory is the `configure_demo` directory. It is meant to configure an instance of Vault server with the necessary auth method, policy, and secrets engine to work with the GitHub Actions workflow. It also will add the required GitHub Actions secrets to your instance of the repository.
+- **HCP Client ID:** `<hcp_client_id>`
+- **HCP Client Secret:** `<hcp_client_secret>`
 
-The GitHub Actions workflow is defined in the `oidc_test.yml` file inside of the `.github/workflows` directory. It makes some assumptions about your repository and the Vault server in question. If you choose to deviate from the demo files, then you'll need to make adjustments. There is also a troubleshooting step helpfully named `Troubleshooting`. That section can help you determine what might be going wrong with your configuration if you run into issues. You can safely remove it once your config is working, as it exposes the contents of your JWT and Vault's response with a valid token.
+## Configuring Vault
 
-## How to use this repo
+Note that environment variables don't directly work through the command line for this setup. The `HCP_CLIENT_ID` and `HCP_CLIENT_SECRET` must be predefined within HCP settings. It's necessary to configure these environment variables within HCP to ensure functionality.
 
-If you're looking to take this demo for a spin, start by forking the repo into your own account. Then you will follow the `README.md` in the `configure_vault` directory to get your Vault server provisioned. Once that's complete, you can follow the `README.md` in the `configure_demo` directory to get the Vault server configured and the GitHub Actions secrets populated. The Terraform configurations both use Terraform Cloud as their backend. If you don't want to use Terraform Cloud, simply replace the backend with your preferred option.
+## Executing Terraform
+
+Commands to be executed:
+
+```bash
+terraform plan
+terraform apply
+```
+
+## Post-Terraform Application
+
+After successfully applying the Terraform configuration, you should see the following output:
+
+```plaintext
+Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
+
+Outputs:
+vault_admin_token = "<vault_admin_token>"
+vault_public_endpoint_url = "<vault_public_endpoint_url>"
+```
+
+## Configuring the Demo
+
+Set the `VAULT_TOKEN` (using the vault_admin_token) and `GITHUB_TOKEN` as environment variables within the HCP cloud workspace, then execute the Terraform plan and apply commands with the respective variables:
+
+```bash
+terraform plan -var="vault_server_url=<vault_public_endpoint_url>" -var="github_organization=<github_organization>" -var="github_repository=<github_repository>"
+terraform apply -var="vault_server_url=<vault_public_endpoint_url>" -var="github_organization=<github_organization>" -var="github_repository=<github_repository>"
+```
