@@ -1,4 +1,6 @@
 
+
+
 # Terraform and HCP Integration Guide
 
 The reason HCP is being used in the terraform scripts is because the `terraform.tf` file specifies a cloud configuration block as follows:
@@ -12,9 +14,17 @@ cloud {
 }
 ```
 
+## Create a Hashicorp Cloud Platform Account
+
+You will need an account on the Hashicorp Cloud Platform (HCP) to use this guide.
+
+## Create a Project
+
+Once you have an HCP account, if a default project does not exist, create a new project within the HCP.
+
 ## Creating a Service Principal in HCP
 
-Create a Service Principal at the Project level following this guide: [Service Principal Creation Guide](https://registry.terraform.io/providers/hashicorp/hcp/latest/docs/guides/auth#1-create-a-service-principal)
+Create a Service Principal at the Project level following this guide: [Service Principal Creation Guide](https://registry.terraform.io/providers/hashicorp/hcp/latest/docs/guides/auth)
 
 - **HCP Client ID:** `<hcp_client_id>`
 - **HCP Client Secret:** `<hcp_client_secret>`
