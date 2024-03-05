@@ -7,11 +7,13 @@ terraform {
   }
 
   cloud {
-    organization = "ned-in-the-cloud"
+    organization = "polajenko-tf-org"
 
     workspaces {
       name = "oidc-vault-cluster"
     }
   }
 }
+
+
 
