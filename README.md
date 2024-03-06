@@ -24,7 +24,7 @@ Once you have an HCP account, if a default project does not exist, create a new 
 
 ## Creating a Service Principal in HCP
 
-Create a Service Principal at the Project level following this guide: [Service Principal Creation Guide](https://registry.terraform.io/providers/hashicorp/hcp/latest/docs/guides/auth)
+Create a Service Principal at the Project level (to use with Terraform) following this guide: [Service Principal Creation Guide](https://registry.terraform.io/providers/hashicorp/hcp/latest/docs/guides/auth)
 
 - **HCP Client ID:** `<hcp_client_id>`
 - **HCP Client Secret:** `<hcp_client_secret>`
