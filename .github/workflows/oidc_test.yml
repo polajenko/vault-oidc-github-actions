@@ -32,7 +32,7 @@ jobs:
           
           # Print the Vault login response.
           echo 'Vault Login Response'
-          curl -sSLf -X POST -H "Content-Type: application/json" -H "X-Vault-Namespace: admin" --data @token.json $VAULT_URL/v1/auth/$VAULT_AUTH_PATH/login
+            curl -sSLf -X POST -H "Content-Type: application/json" -H "X-Vault-Namespace: ${{ secrets.VAULT_NAMESPACE }}" --data @token.json $VAULT_URL/v1/auth/$VAULT_AUTH_PATH/login
           
           # Remove the token file when we're done (if we don't fail)
           rm ./token.json
