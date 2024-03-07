@@ -1,7 +1,15 @@
 
+# GitHub Actions with Vault OIDC Demonstration
 
+A demonstration of using GitHub OIDC to authenticate to HashiCorp Vault.
 
-# Terraform and HCP Integration Guide
+This repo accompanies a talk delivered at HashiConf Global at this link:  
+
+Hashicorp: https://www.hashicorp.com/resources/using-oidc-with-hashicorp-vault-and-github-actions
+
+Youtube: https://www.youtube.com/watch?v=lsWOx9bzAwY
+
+## Terraform and HCP Integration Guide
 
 The reason HCP is being used in the terraform scripts is because the `terraform.tf` file specifies a cloud configuration block as follows:
 
