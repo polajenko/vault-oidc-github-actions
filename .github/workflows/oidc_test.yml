@@ -1,32 +1,39 @@
+# This is a GitHub Actions workflow that tests OpenID Connect (OIDC) access to a Vault server.
 name: OIDC Access Test
 
+# This workflow is triggered on every push to the repository.
 on: push
 
+# These permissions are required for the GitHub Actions runner to request an ID token and read the repository contents.
 permissions:
   id-token: write
   contents: read
 
+# This workflow has a single job named "read-secret".
 jobs:
   read-secret:
+    # The job runs on the latest version of Ubuntu.
     runs-on: ubuntu-latest
     steps:
-    # Checkout the repository to the GitHub Actions runner
+    # This step checks out the repository to the GitHub Actions runner.
     - name: Checkout
       uses: actions/checkout@v2
 
-    # Shout out to Benjamin Pannell at Sierra Softworks for this
-    # https://sierrasoftworks.com/2021/12/20/vault-github-actions/#policies
+    # This step is used for troubleshooting. It requests an ID token from GitHub, uses it to authenticate with Vault, and prints the JWT claims and Vault login response.
     - name: Troubleshooting
       run: |
+          # Request an ID token from GitHub and use it to authenticate with Vault.
           curl -sSL -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL" | \
           jq "{ jwt: .value, role: \"$VAULT_ROLE\" }" > ./token.json
             
+          # Print the JWT claims.
           echo 'GitHub Actions Token Claims'
           cat ./token.json | jq -r '.jwt | split(".") | .[1] | @base64d' | jq
-
+          
+          # Print the Vault login response.
           echo 'Vault Login Response'
           curl -sSLf -X POST -H "Content-Type: application/json" -H "X-Vault-Namespace: admin" --data @token.json $VAULT_URL/v1/auth/$VAULT_AUTH_PATH/login
-
+          
           # Remove the token file when we're done (if we don't fail)
           rm ./token.json
       env:
@@ -34,6 +41,7 @@ jobs:
         VAULT_AUTH_PATH: jwt
         VAULT_ROLE: ${{ secrets.VAULT_ROLE }}
 
+    # This step uses the hashicorp/vault-action to retrieve a secret from Vault.
     - name: Retrieve Secrets
       id: secretdata
       uses: hashicorp/vault-action@v2.4.0
@@ -44,7 +52,7 @@ jobs:
         role: ${{ secrets.VAULT_ROLE }}
         secrets: ${{ secrets.VAULT_SECRET_PATH }} ${{ secrets.VAULT_SECRET_KEY }} | MY_SECRET
 
+    # This step prints the retrieved secret. The actual value of the secret is redacted in the logs.
     - name: Print Secrets
       run: |
-          echo '${{ steps.secretdata.outputs.MY_SECRET }}'
-
+        echo '${{ steps.secretdata.outputs.MY_SECRET }}'
