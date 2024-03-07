@@ -9,6 +9,10 @@ Hashicorp: https://www.hashicorp.com/resources/using-oidc-with-hashicorp-vault-a
 
 Youtube: https://www.youtube.com/watch?v=lsWOx9bzAwY
 
+## How a GitHub Action Obtains Secrets
+
+![Example Image](images/oidc_flow.jpg)
+
 ## Terraform and HCP Integration Guide
 
 The reason HCP is being used in the terraform scripts is because the `terraform.tf` file specifies a cloud configuration block as follows:
