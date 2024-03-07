@@ -1,11 +1,11 @@
 output "VAULT_ADDR" {
   value = var.vault_server_url
-  sensitive = true
+  sensitive = false
 }
 
 output "VAULT_NAMESPACE" {
-  value = "admin"
-  sensitive = true
+  value = ""
+  sensitive = false
 }
 
 output "vault_server_url" {
