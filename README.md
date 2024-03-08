@@ -9,6 +9,21 @@ Hashicorp: https://www.hashicorp.com/resources/using-oidc-with-hashicorp-vault-a
 
 Youtube: https://www.youtube.com/watch?v=lsWOx9bzAwY
 
+## Summary
+
+We are establishing a workflow where our GitHub Actions can securely access secrets stored in HashiCorp Vault using OpenID Connect (OIDC). The key steps involved in this process are:
+ 
+1. **Configuration in GitHub**: We are setting up secrets in our GitHub repository that GitHub Actions will use to interact with the Vault server. These secrets include the Vault server address, namespace, the path where our secret is stored, the key of the secret, and the role for authentication.
+ 
+2. **Vault ACL Policy**: We are creating an Access Control List (ACL) policy in Vault that specifies what the GitHub repository can do with the secrets. In our demo, the policy named after the GitHub repo has read and list permissions on the `sauce_recipe` path.
+ 
+3. **JWT Authentication**: In Vault, we are enabling JWT (JSON Web Token) as an authentication method, which allows GitHub Actions to authenticate with Vault using a token issued by GitHub.
+ 
+4. **JWT Role**: We are creating a role in Vault specifically tied to our GitHub repository that specifies the constraints for authentication, like the allowed audience (which is the URL of the GitHub repository) and the subject (the specific branch of the repository). This role enforces that only tokens with these claims are accepted, providing security by ensuring that only actions running from the specified GitHub repository and branch can access the secrets.
+ 
+The high-level goal is to secure and streamline the process by which our GitHub Actions workflows access and use secrets from Vault during their execution. This setup ensures that the secrets are not hardcoded into the codebase or GitHub Actions configuration files, which would be a security risk. Instead, it dynamically fetches them from Vault, leveraging OIDC for secure, token-based authentication.
+
+
 ## How a GitHub Action Obtains Secrets
 
 ![Example Image](images/oidc_flow.jpg)
